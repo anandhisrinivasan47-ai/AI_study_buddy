@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Buddy</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fff0f7, #f0e8ff);
+            color: #44304f;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 3px 15px #e5cde5;
+        }
+
+        header h1 {
+            color: #bd5ca6;
+            margin: 0;
+        }
+
+        header p {
+            margin-bottom: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px;
+        }
+
+        nav a {
+            color: #914b91;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 45px 20px;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            color: #a94d9a;
+        }
+
+        .hero button, .task button {
+            background: #c66bb5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 5px 18px #dfcbe8;
+            text-align: center;
+        }
+
+        .card .emoji {
+            font-size: 40px;
+        }
+
+        section.content {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 5px 18px #dfcbe8;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #d9b5dc;
+            border-radius: 10px;
+            margin: 5px 0;
+            max-width: 100%;
+        }
+
+        .task {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .task span {
+            flex: 1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media (max-width: 500px) {
+            .hero h2 {
+                font-size: 26px;
+            }
+
+            section.content {
+                margin: 20px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🎀 AI Study Buddy</h1>
+        <p>Your little partner for smarter studying ✨</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#planner">Study Planner</a>
+        <a href="#quiz">Quiz Practice</a>
+        <a href="#progress">Progress</a>
+    </nav>
+
+    <main>
+        <section class="hero" id="home">
+            <h2>Learn better, one day at a time! 💗</h2>
+            <p>Plan your studies, practise questions and celebrate progress.</p>
+            <button onclick="document.getElementById('planner').scrollIntoView({behavior:'smooth'})">
+                Start Studying
+            </button>
+        </section>
+
+        <div class="cards">
+            <div class="card">
+                <div class="emoji">📚</div>
+                <h3>Study Planner</h3>
+                <p>Organise your daily study tasks.</p>
+            </div>
+
+            <div class="card">
+                <div class="emoji">🧠</div>
+                <h3>Quiz Practice</h3>
+                <p>Test what you have learned.</p>
+            </div>
+
+            <div class="card">
+                <div class="emoji">🌟</div>
+                <h3>My Progress</h3>
+                <p>Celebrate every completed task.</p>
+            </div>
+        </div>
+
+        <section class="content" id="planner">
+            <h2>📝 My Study Planner</h2>
+            <p>Add a task you want to complete today.</p>
+
+            <input id="taskInput" type="text"
+                placeholder="Example: Learn Python loops">
+
+            <button onclick="addTask()">Add Task</button>
+
+            <div id="taskList"></div>
+        </section>
+
+        <section class="content" id="quiz">
+            <h2>🧠 Quick Quiz</h2>
+            <p>Which Python command displays text?</p>
+
+            <select id="answer">
+                <option value="">Choose your answer</option>
+                <option value="input">input()</option>
+                <option value="print">print()</option>
+                <option value="len">len()</option>
+            </select>
+
+            <button onclick="checkAnswer()">Check Answer</button>
+            <p id="quizResult"></p>
+        </section>
+
+        <section class="content" id="progress">
+            <h2>🌟 My Progress</h2>
+            <p>Tasks completed: <strong id="completed">0</strong></p>
+            <p>Quiz correct answers: <strong id="score">0</strong></p>
+        </section>
+    </main>
+
+    <footer>
+        Made with 💗 for curious learners.
+    </footer>
+
+    <script>
+        let completedTasks = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        function addTask() {
+            const input = document.getElementById("taskInput");
+            const taskName = input.value.trim();
+
+            if (taskName === "") {
+                alert("Please type a study task first!");
+                return;
+            }
+
+            const task = document.createElement("div");
+            task.className = "task";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+
+            const text = document.createElement("span");
+            text.textContent = taskName;
+
+            checkbox.addEventListener("change", function () {
+                if (checkbox.checked) {
+                    completedTasks++;
+                } else {
+                    completedTasks--;
+                }
+
+                document.getElementById("completed").textContent =
+                    completedTasks;
+            });
+
+            task.appendChild(checkbox);
+            task.appendChild(text);
+            document.getElementById("taskList").appendChild(task);
+
+            input.value = "";
+        }
+
+        function checkAnswer() {
+            if (quizAnswered) {
+                document.getElementById("quizResult").textContent =
+                    "You've already answered this question!";
+                return;
+            }
+
+            const answer = document.getElementById("answer").value;
+            const result = document.getElementById("quizResult");
+
+            if (answer === "") {
+                result.textContent = "Please choose an answer first.";
+                return;
+            }
+
+            quizAnswered = true;
+
+            if (answer === "print") {
+                result.textContent = "Correct! Amazing work! 🎉";
+                quizScore++;
+                document.getElementById("score").textContent = quizScore;
+            } else {
+                result.textContent = "Not quite! The correct answer is print().";
+            }
+        }
+    </script>
+
+</body>
+</html>
